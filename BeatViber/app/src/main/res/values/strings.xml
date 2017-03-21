@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BeatViber</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="haptic_metronome">Haptic</string>
+    <string name="change_metronome">Metronome</string>
+    <string name="change_input">Input</string>
+    <string name="start_metronome">Start</string>
+    <string name="stop_metronome">Stop</string>
+    <string name="rb_80_bpm">80 BPM</string>
+    <string name="rb_100_bpm">100 BPM</string>
+    <string name="rb_60_bpm">60 BPM</string>
+    <string name="sound_metronome">Sound</string>
+</resources>
