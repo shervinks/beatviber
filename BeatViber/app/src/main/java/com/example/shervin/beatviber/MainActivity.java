@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.os.CountDownTimer;
+import android.media.MediaPlayer;
+
 
 import static com.example.shervin.beatviber.R.layout.vibrator;
 
@@ -42,6 +45,34 @@ public class MainActivity extends AppCompatActivity {
         Log.d("test", "hey there homie");
     }
 
+    MediaPlayer mp;
+    public void play_music(){
+        if (mp.isPlaying()){
+            mp.stop();
+        }else{
+            mp.start();
+        }
+
+    }
+    CountDownTimer timer = new CountDownTimer(10, 10){
+        public void onTick(long millisUntilFinished) {
+        }
+        public void onFinish() {
+     }
+    };
+    CountDownTimer call_timer(int minutes,int BPM){
+        int tot_time = minutes * 60000;
+        int tic = tot_time/(minutes*BPM);
+        CountDownTimer timer = new CountDownTimer(tot_time, tic){
+            public void onTick(long millisUntilFinished) {
+                play_music();
+            }
+            public void onFinish() {
+            }
+        }.start();
+        return timer;
+    }
+
     public void playMetronome(View view){
 
         radioGroup = (RadioGroup) findViewById(R.id.rg_bpm);
@@ -59,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         String metronome_string = metronomeButton.getText().toString();
 
         if (metronome_string.equals("Haptic")){
+            timer.cancel();
             // Cancel sound metronome if playing
             switch (bpm_string) {
                 case ("60 BPM"):
@@ -72,13 +104,28 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         } else {
+            mp = MediaPlayer.create(this, R.raw.metronome);
             // play sound metronome and cancel haptic metronome
+            switch (bpm_string) {
+                case ("60 BPM"):
+                    timer.cancel();
+                    timer = call_timer(50, 60);
+                    break;
+                case ("80 BPM"):
+                    timer.cancel();
+                    timer = call_timer(50, 80);
+                    break;
+                case ("100 BPM"):
+                    timer.cancel();
+                    timer = call_timer(50, 100);
+                    break;
+            }
         }
     }
 
     public void stopMetronome (View view){
-
         v.cancel();
+        timer.cancel();
     }
 
     public void mainToMetronome(View view){
