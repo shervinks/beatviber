@@ -10,8 +10,8 @@
         android:id="@+id/start_metronome"
         android:layout_width="129dp"
         android:layout_height="74dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="438dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="358dp"
         android:onClick="playMetronome"
         android:text="@string/start_metronome"
         app:layout_constraintLeft_toRightOf="@+id/stop_metronome"
@@ -22,8 +22,8 @@
         android:id="@+id/stop_metronome"
         android:layout_width="129dp"
         android:layout_height="74dp"
-        android:layout_marginLeft="34dp"
-        android:layout_marginTop="438dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginTop="358dp"
         android:onClick="stopMetronome"
         android:text="@string/stop_metronome"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -87,4 +87,15 @@
             android:layout_weight="1"
             android:text="@string/sound_metronome" />
     </RadioGroup>
+
+    <Button
+        android:id="@+id/metronome_to_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="to_main"
+        android:text="Back"
+        android:layout_marginLeft="38dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp" />
 </android.support.constraint.ConstraintLayout>

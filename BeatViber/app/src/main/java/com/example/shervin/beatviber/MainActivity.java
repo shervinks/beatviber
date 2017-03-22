@@ -4,10 +4,13 @@
 package com.example.shervin.beatviber;
 
 import android.content.Context;
+import android.content.Intent;
 import android.icu.text.LocaleDisplayNames;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -15,6 +18,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.os.CountDownTimer;
 import android.media.MediaPlayer;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.*;
 
 import java.lang.reflect.Array;
@@ -306,6 +319,51 @@ public class MainActivity extends AppCompatActivity {
     public void process_info(info user){
         //Write information of the user to file
         //############Need to implement######################
+        String user_name = user.get_name();
+        String rhythm_number = user.get_rhythm_num();
+        String bpm = user.get_BPM();
+        ArrayList errors = new ArrayList();
+        errors = user.get_error();
+        Log.d("file_test", user_name);
+        Log.d("file_test", rhythm_number);
+        Log.d("file_test", bpm);
+        Log.d("file_test", errors.toString());
+        long mean;
+        long total = 0;
+        long max_error;
+
+        // claculate mean
+        for (int i = 0; i < errors.size(); i++){
+            total += Math.abs((long) errors.get(i));
+        }
+        mean = total / errors.size();
+        // calculate max error
+        long max = 0;
+        for (int i = 0; i < errors.size(); i++){
+            if (Math.abs((long) errors.get(i)) > max){
+                max = Math.abs((long) errors.get(i));
+            }
+        }
+        max_error = max;
+        // get file instance
+        BufferedWriter bufferedWriter = null;
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(new
+                    File(getFilesDir()+File.separator+"Results.txt"), true));
+            bufferedWriter.write(user_name+"\r\n");
+            bufferedWriter.write(rhythm_number+"\r\n");
+            bufferedWriter.write(bpm+"\r\n");
+            bufferedWriter.write(errors.toString()+"\r\n");
+            bufferedWriter.write("mean: "+mean+"\r\n");
+            bufferedWriter.write("max error: "+max_error+"\r\n");
+            bufferedWriter.write("==============================\n");
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("file_test", "writing failed");
+        }
+
+
     }
 
     public void mainToMetronome(View view){
@@ -318,9 +376,89 @@ public class MainActivity extends AppCompatActivity {
         setup_User(view);
         setContentView(R.layout.tapping);
     }
+    public void to_main(View view){
+        stopMetronome(view);
+        setContentView(R.layout.activity_main);
+    }
+
+    private StringBuilder builder = new StringBuilder("");
+    public void to_results(View view){
+        setContentView(R.layout.user_results);
+        TextView textView = (TextView)findViewById(R.id.results_view);
+        textView.setMovementMethod(new ScrollingMovementMethod());
+
+        // empty string Builder
+        builder = new StringBuilder("");
+
+        // Read file
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(new
+                    File(getFilesDir()+File.separator+"Results.txt")));
+            String read;
+
+            while((read = bufferedReader.readLine()) != null){
+                Log.d("file_test", "readline");
+                builder.append(read+"\n");
+            }
+            Log.d("file_test", builder.toString());
+            bufferedReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.d("file_test", "reading failed");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("file_test", "reading failed 2");
+        }
+
+        textView.setText(builder.toString());
+
+    }
+
+    public void email_results(View view){
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"shervinks@yahoo.com"});
+        i.putExtra(Intent.EXTRA_SUBJECT, "BeatViber Results");
+        i.putExtra(Intent.EXTRA_TEXT   , builder.toString());
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Log.d("file_test", "cannot send email");
+        }
+    }
+
+
+    public void clear_results(View view){
+
+        BufferedWriter bufferedWriter = null;
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(new
+                    File(getFilesDir()+File.separator+"Results.txt")));
+            bufferedWriter.write("");
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("file_test", "clearing file failed");
+        }
+        to_results(view);
+    }
     public void user_taped(View view){
         //press = MediaPlayer.create(this, R.raw.piano);
         //play_click();
+
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.drum);
+        mp.start();
+
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mp.stop();
+            }
+        }, 200);
+
+
         if(user.insert_time_stamp(System.currentTimeMillis()) == false){
             //all data got
             Log.d("time stamps raw      ", user.get_raw_time_stamps().toString());
