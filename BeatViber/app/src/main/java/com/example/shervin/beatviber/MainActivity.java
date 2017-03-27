@@ -12,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -210,6 +212,8 @@ public class MainActivity extends AppCompatActivity {
     public void play_click(){
         if (press.isPlaying()){
             press.stop();
+            press = MediaPlayer.create(this, R.raw.drum);
+            press.start();
         }else{
             press.start();
         }
@@ -373,9 +377,36 @@ public class MainActivity extends AppCompatActivity {
     public void TO_User_input(View view){
         setContentView(R.layout.user_input);
     }
-    public void TO_Tap(View view){
+    public void TO_Tap(final View view){
         setup_User(view);
         setContentView(R.layout.tapping);
+
+        Button tap_button = (Button) findViewById(R.id.tap);
+        tap_button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    user_taped(view);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+    public void TO_Practice(final View view){
+        setContentView(R.layout.practice);
+
+        Button tap_button = (Button) findViewById(R.id.practice_input);
+        tap_button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    practice_tap(view);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
     public void to_main(View view){
         stopMetronome(view);
@@ -463,6 +494,10 @@ public class MainActivity extends AppCompatActivity {
             process_info(user);
             TO_User_input(view);
         }
+    }
+
+    public void practice_tap(View view){
+        play_click();
     }
 }
 
