@@ -42,6 +42,7 @@ class info{
     private String BPM;
     private String rhythm_num;
     private double[] rhythm_data;
+    private String metro_type;
 
     private ArrayList<Long> raw_time_stamp = new ArrayList();
     private ArrayList formated_time_stamp = new ArrayList();
@@ -51,13 +52,14 @@ class info{
     private int beat_time;
 
 
-    public info(String name, String BPM, String rhythm_num, double[] rhythm_data){
+    public info(String name, String BPM, String rhythm_num, double[] rhythm_data, String metro_type){
         this.name = name;
         this.BPM = BPM;
         this.beat_time = beat_time();
         this.rhythm_num = rhythm_num;
         this.rhythm_data = rhythm_data;
         this.formate_rhythms();
+        this.metro_type = metro_type;
 
     }
     /*different values used for different BPM, check excel*/
@@ -143,6 +145,9 @@ class info{
     }
     public ArrayList get_error(){
         return this.error_number;
+    }
+    public String get_metronome(){
+        return this.metro_type;
     }
 }
 
@@ -316,10 +321,19 @@ public class MainActivity extends AppCompatActivity {
         EditText name = (EditText)findViewById(R.id.user_name);
         String name_string = name.getText().toString();
 
-        user = new info(name_string, bpm_string, rhym_string, all_rhythms[Character.getNumericValue(rhym_string.charAt(7)) - 1]);
+        /*
+        * Get type of metronome as string
+        * */
+        radioGroup = (RadioGroup) findViewById(R.id.metro_type);
+        int metroid = radioGroup.getCheckedRadioButtonId();
+        RadioButton metrobutton = (RadioButton) findViewById(metroid);
+        String metro_string = metrobutton.getText().toString();
+
+        user = new info(name_string, bpm_string, rhym_string, all_rhythms[Character.getNumericValue(rhym_string.charAt(7)) - 1], metro_string);
         Log.d("user name         ", user.get_name());
         Log.d("user rhythm number", user.get_rhythm_num());
         Log.d("user BPM          ", user.get_BPM());
+        Log.d("Metronome Type    ", user.get_metronome());
     }
     public void process_info(info user){
         //Write information of the user to file

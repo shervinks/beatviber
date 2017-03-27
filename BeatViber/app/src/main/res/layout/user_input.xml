@@ -45,7 +45,7 @@
         android:id="@+id/input_session"
         android:layout_width="164dp"
         android:layout_height="73dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:onClick="TO_Tap"
@@ -111,9 +111,9 @@
 
     <EditText
         android:id="@+id/user_name"
-        android:layout_width="351dp"
-        android:layout_height="71dp"
-        android:layout_marginBottom="131dp"
+        android:layout_width="352dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="99dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:hint="Name"
@@ -121,7 +121,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="356dp" />
 
     <Button
         android:id="@+id/input_to_main"
@@ -136,5 +137,36 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/input_session" />
+
+    <RadioGroup
+        android:id="@+id/metro_type"
+        android:layout_width="361dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.571"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.632"
+        android:checkedButton="@+id/sound_metro">
+
+        <RadioButton
+            android:id="@+id/sound_metro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sound Metronome" />
+
+        <RadioButton
+            android:id="@+id/haptic_metro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Haptic Metronome" />
+    </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>
