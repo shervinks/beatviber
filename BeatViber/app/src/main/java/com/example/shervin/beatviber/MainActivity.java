@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Get instance of Vibrator from current Context
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        press = MediaPlayer.create(this, R.raw.drum);
 
     }
 
@@ -447,7 +446,19 @@ public class MainActivity extends AppCompatActivity {
     public void user_taped(View view){
         //press = MediaPlayer.create(this, R.raw.piano);
         //play_click();
-        play_click();
+
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.drum);
+        mp.start();
+
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mp.stop();
+            }
+        }, 200);
+
+
         if(user.insert_time_stamp(System.currentTimeMillis()) == false){
             //all data got
             Log.d("time stamps raw      ", user.get_raw_time_stamps().toString());
@@ -456,6 +467,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Rhythm formated      ", user.get_formated_rhythm().toString());
             Log.d("Time differences     ", user.get_error().toString());
             Log.d("ended", "all data collected");
+
             /*
             * Need to process user data before  exiting to previous page. everything is in user.
             * just output to a file using the get functions;
