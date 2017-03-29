@@ -3,7 +3,9 @@
  */
 package com.example.shervin.beatviber;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.text.LocaleDisplayNames;
 import android.os.Handler;
@@ -88,7 +90,7 @@ class info{
         }*/
         Log.d("Pressed at", Long.toString(curr_time));
         this.raw_time_stamp.add(curr_time);
-        if(this.raw_time_stamp.size() == this.rhythm_data.length){
+        if(this.raw_time_stamp.size() == this.rhythm_data.length + 1){
             /*
             * Got all time stamps
             * need to stop
@@ -200,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private String remember_name= "";
     // pattern for 60 bpm
     long[] pattern_60 = {0, 200, 800};
     // pattern for 80 bpm
@@ -331,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
         //Get name
         EditText name = (EditText)findViewById(R.id.user_name);
         String name_string = name.getText().toString();
+        remember_name = name_string;
 
         /*
         * Get type of metronome as string
@@ -403,6 +407,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public void TO_User_input(View view){
         setContentView(R.layout.user_input);
+        EditText name = (EditText)findViewById(R.id.user_name);
+        name.setText(remember_name, TextView.BufferType.EDITABLE);
     }
     public void TO_Tap(final View view){
         setup_User(view);
@@ -488,19 +494,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void clear_results(View view){
+    public void clear_results(final View view){
 
-        BufferedWriter bufferedWriter = null;
-        try {
-            bufferedWriter = new BufferedWriter(new FileWriter(new
-                    File(getFilesDir()+File.separator+"Results.txt")));
-            bufferedWriter.write("");
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d("file_test", "clearing file failed");
-        }
-        to_results(view);
+        new AlertDialog.Builder(this)
+                .setTitle("Delete!")
+                .setMessage("Are You Sure You Want To Clear The Data?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //Toast.makeText(MainActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
+                        BufferedWriter bufferedWriter = null;
+                        try {
+                            bufferedWriter = new BufferedWriter(new FileWriter(new
+                                    File(getFilesDir()+File.separator+"Results.txt")));
+                            bufferedWriter.write("");
+                            bufferedWriter.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.d("file_test", "clearing file failed");
+                        }
+                        to_results(view);
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
+
     }
     public void user_taped(View view){
         //press = MediaPlayer.create(this, R.raw.piano);
