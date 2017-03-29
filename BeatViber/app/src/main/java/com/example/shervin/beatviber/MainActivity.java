@@ -83,9 +83,9 @@ class info{
     }
     //add time stamp, returns false if number of timestamps exceeded.
     public boolean insert_time_stamp(long curr_time){
-        if(this.raw_time_stamp.isEmpty()){
+        /*if(this.raw_time_stamp.isEmpty()){
             this.offset = curr_time;
-        }
+        }*/
         Log.d("Pressed at", Long.toString(curr_time));
         this.raw_time_stamp.add(curr_time);
         if(this.raw_time_stamp.size() == this.rhythm_data.length){
@@ -103,8 +103,13 @@ class info{
     //formate raw times stamp to time intervals
     public void formate_raw(){
         for (int i = 0; i < this.raw_time_stamp.size(); i ++){
-            long to_add = this.raw_time_stamp.get(i) - this.offset;
-            this.formated_time_stamp.add(to_add);
+            if (i == 0){
+                this.offset = this.raw_time_stamp.get(i);
+            } else {
+                long to_add = this.raw_time_stamp.get(i) - this.offset;
+                this.formated_time_stamp.add(to_add);
+                this.offset = this.raw_time_stamp.get(i);
+            }
         }
     }
     //calculate error from formated rhythm and formated time stamp
@@ -171,12 +176,18 @@ public class MainActivity extends AppCompatActivity {
         1, 0.5, 0.5, 2
         0.5, 0.5, 2, 1*/
     public static final double[][] all_rhythms = new double[][]{
-            {0, 1, 2, 4, 5, 6, 8, 9, 10},
+            {1, 1, 2, 1, 1, 2, 1, 1, 2},
+            {2, 1, 1, 2, 1, 1, 2, 1, 1},
+            {1, 0.5, 0.5, 1, 1, 1, 0.5, 0.5, 1, 1, 1, 0.5, 0.5, 1, 1},
+            {1, 1, 0.5, 0.5, 1, 1, 1, 0.5, 0.5, 1, 1, 1, 0.5, 0.5, 1},
+            {1, 0.5, 0.5, 2, 1, 0.5, 0.5, 2, 1, 0.5, 0.5, 2},
+            {0.5, 0.5, 2, 1, 0.5, 0.5, 2, 1}
+            /*{0, 1, 2, 4, 5, 6, 8, 9, 10},
             {0, 2, 3, 4 ,6, 7, 8, 10,11},
             {0, 1, 1.5, 2, 3, 4, 5, 5.5, 6, 7, 8, 9, 9.5, 10, 11},
             {0, 1, 2, 2.5, 3, 4, 5, 6, 6.5, 7, 8, 9, 10, 10.5, 11},
             {0, 1, 1.5, 2, 4, 5, 5.5, 6, 8, 9, 9.5, 10},
-            {0, 0.5, 1, 3, 4, 4.5, 5, 7, 8, 8.5, 9, 11}
+            {0, 0.5, 1, 3, 4, 4.5, 5, 7, 8, 8.5, 9, 11}*/
     };
 
     @Override
@@ -341,6 +352,7 @@ public class MainActivity extends AppCompatActivity {
         String user_name = user.get_name();
         String rhythm_number = user.get_rhythm_num();
         String bpm = user.get_BPM();
+        String metro_type = user.get_metronome();
         ArrayList errors = new ArrayList();
         errors = user.get_error();
         Log.d("file_test", user_name);
@@ -372,6 +384,7 @@ public class MainActivity extends AppCompatActivity {
             bufferedWriter.write(user_name+"\r\n");
             bufferedWriter.write(rhythm_number+"\r\n");
             bufferedWriter.write(bpm+"\r\n");
+            bufferedWriter.write(metro_type+"\r\n");
             bufferedWriter.write(errors.toString()+"\r\n");
             bufferedWriter.write("mean: "+mean+"\r\n");
             bufferedWriter.write("max error: "+max_error+"\r\n");
